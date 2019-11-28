@@ -35,7 +35,7 @@ class DisruptionsJDBCSink(dbUrl: String, user: String, password: String)
   override def invoke(value: StationDisruption, context: SinkFunction.Context[_]): Unit = {
 
     val query: doobie.Update0 =
-      sql"insert into disruption_count (station_code, start_time, end_time) values (${value.stationCode}, ${value.startTime}, ${value.endTime})".update
+      sql"insert into disruptions (station_code, start_time, end_time) values (${value.stationCode}, ${value.startTime}, ${value.endTime})".update
 
     query.run
       .attemptSomeSqlState { case _ => }

@@ -2,7 +2,8 @@ package com.github.idarlington.flinkProcessor.processors
 
 import java.util.Properties
 
-import com.github.idarlington.flinkProcessor.config.ProcessorConfig
+import cats.effect.IO
+import com.github.idarlington.flinkProcessor.config.{ DecoderConfig, ProcessorConfig }
 import com.github.idarlington.flinkProcessor.serialization.DWSerializationSchema
 import com.github.idarlington.model.DisruptionWrapper
 import io.circe.Decoder.Result
@@ -16,22 +17,18 @@ import org.apache.flink.streaming.connectors.kafka.{
   KafkaSerializationSchema
 }
 import com.github.idarlington.model.circe.DutchDecoders._
+import org.apache.flink.streaming.api.datastream.DataStreamSink
 
 import scala.collection.immutable
 
-object Decoder extends App {
+object Decoder extends Processor[DisruptionWrapper] {
 
-  val processorConfig = ProcessorConfig()
-  val decoderConfig   = processorConfig.decoder
+  val decoderConfig: DecoderConfig = processorConfig.decoder
 
   val scraperTopic: String = decoderConfig.scraperTopic
   val decoderTopic: String = decoderConfig.topic
 
-  val properties = new Properties()
-  properties.setProperty("bootstrap.servers", processorConfig.kafka.bootstrapServers)
   properties.setProperty("group.id", decoderConfig.groupId)
-
-  val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
 
   val consumer: FlinkKafkaConsumer[String] =
     new FlinkKafkaConsumer[String](scraperTopic, new SimpleStringSchema(), properties)
@@ -43,20 +40,23 @@ object Decoder extends App {
     FlinkKafkaProducer.Semantic.AT_LEAST_ONCE
   )
 
-  env
-    .addSource(consumer)
-    .flatMap {
-      parser
-        .parse(_)
-        .map { jsonRecord =>
-          decoder(jsonRecord)
-        }
-        .toOption
-    }
-    .flatMap(_.iterator)
-    .addSink(producer)
-
-  env.execute()
+  override def process(
+    env: StreamExecutionEnvironment,
+    processorConfig: ProcessorConfig
+  ): DataStreamSink[DisruptionWrapper] = {
+    env
+      .addSource(consumer)
+      .flatMap {
+        parser
+          .parse(_)
+          .map { jsonRecord =>
+            decoder(jsonRecord)
+          }
+          .toOption
+      }
+      .flatMap(_.iterator)
+      .addSink(producer)
+  }
 
   def decoder(json: Json): immutable.Seq[DisruptionWrapper] = {
     {
@@ -71,5 +71,4 @@ object Decoder extends App {
         case Right(value) => value
       }
   }
-
 }

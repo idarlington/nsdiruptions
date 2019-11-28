@@ -4,11 +4,13 @@ import java.util.Properties
 
 import com.github.idarlington.flinkProcessor.config.ProcessorConfig
 import com.github.idarlington.flinkProcessor.customFunctions.DeDuplicatorFilter
+import com.github.idarlington.flinkProcessor.processors.DeDuplicator.{ consumer, env, producer }
 import com.github.idarlington.flinkProcessor.serialization.{
   DWDeserializationSchema,
   DWSerializationSchema
 }
 import com.github.idarlington.model.DisruptionWrapper
+import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.scala.{ StreamExecutionEnvironment, _ }
 import org.apache.flink.streaming.connectors.kafka.{
   FlinkKafkaConsumer,
@@ -16,19 +18,12 @@ import org.apache.flink.streaming.connectors.kafka.{
   KafkaSerializationSchema
 }
 
-object DeDuplicator extends App {
-
-  val processorConfig = ProcessorConfig()
+object DeDuplicator extends Processor[DisruptionWrapper] {
 
   val decodedTopic: String      = processorConfig.decoder.topic
   val deDuplicatorTopic: String = processorConfig.deDuplicator.topic
 
-  val properties = new Properties()
-
-  properties.setProperty("bootstrap.servers", processorConfig.kafka.bootstrapServers)
   properties.setProperty("group.id", processorConfig.deDuplicator.groupId)
-
-  val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
 
   val consumer: FlinkKafkaConsumer[DisruptionWrapper] =
     new FlinkKafkaConsumer[DisruptionWrapper](
@@ -44,16 +39,19 @@ object DeDuplicator extends App {
     FlinkKafkaProducer.Semantic.EXACTLY_ONCE
   )
 
-  env
-    .addSource(consumer)
-    .map { value =>
-      println(value)
-      value
-    }
-    .keyBy(_.id)
-    .filter(new DeDuplicatorFilter())
-    .addSink(producer)
+  override def process(
+    env: StreamExecutionEnvironment,
+    processorConfig: ProcessorConfig
+  ): DataStreamSink[DisruptionWrapper] = {
+    env
+      .addSource(consumer)
+      .map { value =>
+        println(value)
+        value
+      }
+      .keyBy(_.id)
+      .filter(new DeDuplicatorFilter())
+      .addSink(producer)
 
-  env.execute()
-
+  }
 }

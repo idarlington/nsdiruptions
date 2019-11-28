@@ -6,45 +6,59 @@ import com.github.idarlington.flinkProcessor.config.{ DBConfig, ProcessorConfig 
 import com.github.idarlington.flinkProcessor.customFunctions.DisruptionsJDBCSink
 import com.github.idarlington.flinkProcessor.serialization.DWDeserializationSchema
 import com.github.idarlington.model.{ DisruptionWrapper, StationDisruption }
+import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.scala.{ StreamExecutionEnvironment, _ }
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
+import org.flywaydb.core.Flyway
 
-object Remodeller extends App {
+import scala.util.{ Failure, Success, Try }
 
-  val processorConfig: ProcessorConfig = ProcessorConfig()
-  val dbConfig: DBConfig               = processorConfig.db
-  val deDuplicatorTopic: String        = processorConfig.deDuplicator.topic
-
-  val properties = new Properties()
-  properties.setProperty("bootstrap.servers", processorConfig.kafka.bootstrapServers)
-  properties.setProperty("group.id", processorConfig.reModeller.groupId)
-
-  val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
-
-  val consumer: FlinkKafkaConsumer[DisruptionWrapper] =
-    new FlinkKafkaConsumer[DisruptionWrapper](
-      deDuplicatorTopic,
-      new DWDeserializationSchema(deDuplicatorTopic),
-      properties
-    )
+object Remodeller extends Processor[StationDisruption] {
 
   val keyFunction: ((StationDisruption, Int)) => String = {
     case (disruption: StationDisruption, count: Int) =>
       disruption.stationCode
   }
 
-  env
-    .addSource(consumer)
-    .flatMap(simplify _)
-    .addSink(
-      new DisruptionsJDBCSink(
-        dbConfig.url,
-        dbConfig.user,
-        dbConfig.password
-      )
-    )
+  override def process(
+    env: StreamExecutionEnvironment,
+    processorConfig: ProcessorConfig
+  ): DataStreamSink[StationDisruption] = {
 
-  env.execute()
+    val dbConfig: DBConfig        = processorConfig.db
+    val deDuplicatorTopic: String = processorConfig.deDuplicator.topic
+
+    properties.setProperty("group.id", processorConfig.reModeller.groupId)
+
+    val consumer: FlinkKafkaConsumer[DisruptionWrapper] =
+      new FlinkKafkaConsumer[DisruptionWrapper](
+        deDuplicatorTopic,
+        new DWDeserializationSchema(deDuplicatorTopic),
+        properties
+      )
+
+    env
+      .addSource(consumer)
+      .flatMap(simplify _)
+      .addSink(
+        new DisruptionsJDBCSink(
+          dbConfig.url,
+          dbConfig.user,
+          dbConfig.password
+        )
+      )
+  }
+
+  override def main(args: Array[String]): Unit =
+    Try {
+      val dbConfig = processorConfig.db
+      val flyway =
+        Flyway.configure().dataSource(dbConfig.url, dbConfig.user, dbConfig.password).load()
+      flyway.baseline()
+      flyway.migrate()
+    }.map { _ =>
+      super.main(args)
+    }
 
   def simplify(wrapper: DisruptionWrapper): List[StationDisruption] = {
     wrapper.disruption.trajectories.flatMap { trajectory =>

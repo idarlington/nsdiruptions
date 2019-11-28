@@ -3,6 +3,7 @@ import Keys._
 
 object Dependencies {
   lazy val version = new {
+    val flyway        = "6.0.1"
     val pureConfig    = "0.12.1"
     val doobie        = "0.8.4"
     val ovoKafkaCirce = "0.5.17"
@@ -15,6 +16,7 @@ object Dependencies {
   }
 
   lazy val library = new {
+    val flyway              = "org.flywaydb"          % "flyway-core"                % version.flyway
     val pureConfig          = "com.github.pureconfig" %% "pureconfig"                % version.pureConfig
     val doobieCore          = "org.tpolecat"          %% "doobie-core"               % version.doobie
     val doobiePostgres      = "org.tpolecat"          %% "doobie-postgres"           % version.doobie
@@ -54,6 +56,7 @@ object Dependencies {
   )
 
   val flinkProcessorDependencies: Seq[ModuleID] = Seq(
+    library.flyway,
     library.doobieCore,
     library.doobiePostgres,
     library.flinkScala,
