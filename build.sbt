@@ -13,6 +13,7 @@ lazy val model = (project in file("model"))
 lazy val scraper = (project in file("scraper"))
   .enablePlugins(JavaAppPackaging)
   .enablePlugins(DockerPlugin)
+  .settings(scraperSettings: _*)
   .settings(libraryDependencies ++= scraperDependencies)
   .dependsOn(model)
 
@@ -31,6 +32,8 @@ lazy val commonSettings = Seq(
   scalacOptions += "-Ypartial-unification",
   publishArtifact in Test := false
 )
+
+lazy val scraperSettings = commonSettings ++ testSettings
 
 lazy val flinkProcessorSettings = Seq(
   fork in run := true

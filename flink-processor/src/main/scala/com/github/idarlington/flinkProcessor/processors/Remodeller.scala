@@ -10,6 +10,7 @@ import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.scala.{ StreamExecutionEnvironment, _ }
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 import org.flywaydb.core.Flyway
+import org.flywaydb.core.api.configuration.FluentConfiguration
 
 import scala.util.{ Failure, Success, Try }
 
@@ -49,16 +50,18 @@ object Remodeller extends Processor[StationDisruption] {
       )
   }
 
-  override def main(args: Array[String]): Unit =
-    Try {
-      val dbConfig = processorConfig.db
-      val flyway =
-        Flyway.configure().dataSource(dbConfig.url, dbConfig.user, dbConfig.password).load()
-      flyway.baseline()
-      flyway.migrate()
-    }.map { _ =>
-      super.main(args)
-    }
+  override def main(args: Array[String]): Unit = {
+    val dbConfig = processorConfig.db
+
+    val flyway: Flyway = Flyway
+      .configure()
+      .dataSource(dbConfig.url, dbConfig.user, dbConfig.password)
+      .baselineOnMigrate(true)
+      .load()
+
+    flyway.migrate()
+    super.main(args)
+  }
 
   def simplify(wrapper: DisruptionWrapper): List[StationDisruption] = {
     wrapper.disruption.trajectories.flatMap { trajectory =>

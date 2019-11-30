@@ -4,5 +4,3 @@ CREATE TABLE disruptions(
   "end_time" VARCHAR(100) NOT NULL,
   CONSTRAINT disruptions_pkey PRIMARY KEY (station_code, start_time, end_time)
 );
-
-CREATE UNIQUE INDEX disruptions_pkey ON disruptions(station_code text_ops,start_time text_ops,end_time text_ops);

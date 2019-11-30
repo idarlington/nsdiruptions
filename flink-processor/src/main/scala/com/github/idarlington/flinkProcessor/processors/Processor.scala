@@ -9,7 +9,8 @@ import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 trait Processor[T] {
   val env: StreamExecutionEnvironment  = StreamExecutionEnvironment.getExecutionEnvironment
   val processorConfig: ProcessorConfig = ProcessorConfig()
-  val properties: Properties           = processorConfig.kafka.asProperties
+
+  def properties: Properties = processorConfig.kafka.asProperties
 
   def process(
     env: StreamExecutionEnvironment,
