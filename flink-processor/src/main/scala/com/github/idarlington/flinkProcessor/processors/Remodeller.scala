@@ -40,7 +40,7 @@ object Remodeller extends Processor[StationDisruption] {
 
     env
       .addSource(consumer)
-      .flatMap(simplify _)
+      .flatMap(remodel _)
       .addSink(
         new DisruptionsJDBCSink(
           dbConfig.url,
@@ -63,7 +63,7 @@ object Remodeller extends Processor[StationDisruption] {
     super.main(args)
   }
 
-  def simplify(wrapper: DisruptionWrapper): List[StationDisruption] = {
+  def remodel(wrapper: DisruptionWrapper): List[StationDisruption] = {
     wrapper.disruption.trajectories.flatMap { trajectory =>
       trajectory.stations.map { station =>
         StationDisruption(
