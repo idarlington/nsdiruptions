@@ -7,6 +7,8 @@ organization := "com.github.idarlington"
 version := "0.0.1"
 scalaVersion := "2.12.10"
 
+resolvers in ThisBuild +=  Resolver.bintrayRepo("ovotech", "maven")
+
 lazy val model = (project in file("model"))
   .settings(libraryDependencies ++= modelDependencies)
 
