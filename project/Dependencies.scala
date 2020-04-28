@@ -1,5 +1,4 @@
 import sbt._
-import Keys._
 
 object Dependencies {
   lazy val version = new {
@@ -13,6 +12,7 @@ object Dependencies {
     val http4sVersion = "0.21.0-M5"
     val circe         = "0.12.2"
     val fs2Kafka      = "0.20.0"
+    val slf4jLog4j    = "1.7.30"
   }
 
   lazy val library = new {
@@ -34,9 +34,11 @@ object Dependencies {
     val flinkStreamingScala = "org.apache.flink"      %% "flink-streaming-scala"     % version.flink
     val ovokafkaSerializer  = "com.ovoenergy"         %% "kafka-serialization-core"  % version.ovoKafkaCirce
     val ovoKafkaCirce       = "com.ovoenergy"         %% "kafka-serialization-circe" % version.ovoKafkaCirce
+    val slf4jLog4j          = "org.slf4j"             % "slf4j-log4j12"              % version.slf4jLog4j
   }
 
   val shared: Seq[ModuleID] = Seq(
+    library.slf4jLog4j,
     library.pureConfig,
     library.scalaTest,
     library.scalaCheck
