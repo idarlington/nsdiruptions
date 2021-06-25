@@ -5,9 +5,9 @@ import sbt.Keys.version
 name := "ns-disruptions"
 organization := "com.github.idarlington"
 version := "0.0.1"
-scalaVersion := "2.12.10"
+scalaVersion := Dependencies.version.scala
 
-resolvers in ThisBuild += Resolver.url("https://kaluza.jfrog.io/artifactory/maven")
+ThisBuild / resolvers += "Artifactory Realm" at "https://kaluza.jfrog.io/artifactory/maven"
 
 lazy val model = (project in file("model"))
   .settings(libraryDependencies ++= modelDependencies)
@@ -31,23 +31,24 @@ lazy val `flink-processor` = (project in file("flink-processor"))
 
 lazy val commonSettings = Seq(
   publishMavenStyle := true,
-  scalacOptions += "-Ypartial-unification",
-  publishArtifact in Test := false
+  scalacOptions ++= Seq("-Ypartial-unification", "-Xsource:3"),
+  Test / publishArtifact := false,
+  scalaVersion := Dependencies.version.scala
 )
 
 lazy val scraperSettings = commonSettings ++ testSettings
 
 lazy val flinkProcessorSettings = Seq(
-  fork in run := true
+  run / fork := true
 ) ++ commonSettings ++ testSettings
 
 lazy val testSettings = Seq(
-  fork in Test := false,
-  parallelExecution in Test := false
+  Test / fork := false,
+  Test / parallelExecution := false
 )
 
 lazy val itSettings = Defaults.itSettings ++ Seq(
-  logBuffered in IntegrationTest := false,
-  fork in IntegrationTest :=
+  IntegrationTest / logBuffered := false,
+  IntegrationTest / fork :=
     true
 )
