@@ -38,6 +38,7 @@ object Decoder extends Processor[DisruptionWrapper] {
     env
       .addSource(consumer)
       .flatMap {
+        // TODO log error for parsing error
         parser
           .parse(_)
           .map { jsonRecord =>
