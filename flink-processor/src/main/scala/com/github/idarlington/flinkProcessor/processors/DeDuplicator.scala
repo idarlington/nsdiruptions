@@ -1,22 +1,12 @@
 package com.github.idarlington.flinkProcessor.processors
 
-import java.util.Properties
-
 import com.github.idarlington.flinkProcessor.config.ProcessorConfig
 import com.github.idarlington.flinkProcessor.customFunctions.DeDuplicatorFilter
-import com.github.idarlington.flinkProcessor.processors.DeDuplicator.{ consumer, env, producer }
-import com.github.idarlington.flinkProcessor.serialization.{
-  DWDeserializationSchema,
-  DWSerializationSchema
-}
+import com.github.idarlington.flinkProcessor.serialization.{DWDeserializationSchema, DWSerializationSchema}
 import com.github.idarlington.model.DisruptionWrapper
 import org.apache.flink.streaming.api.datastream.DataStreamSink
-import org.apache.flink.streaming.api.scala.{ StreamExecutionEnvironment, _ }
-import org.apache.flink.streaming.connectors.kafka.{
-  FlinkKafkaConsumer,
-  FlinkKafkaProducer,
-  KafkaSerializationSchema
-}
+import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
+import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer, FlinkKafkaProducer}
 
 object DeDuplicator extends Processor[DisruptionWrapper] {
 
@@ -46,7 +36,6 @@ object DeDuplicator extends Processor[DisruptionWrapper] {
     env
       .addSource(consumer)
       .map { value =>
-        println(value)
         value
       }
       .keyBy(_.id)

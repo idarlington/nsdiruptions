@@ -1,6 +1,6 @@
 package com.github.idarlington.scraper
 
-import cats.effect.{ ExitCode, IO, IOApp }
+import cats.effect.{ExitCode, IO, IOApp}
 import cats.implicits._
 import fs2.kafka._
 import io.circe._
@@ -8,8 +8,7 @@ import jawnfs2._
 import org.http4s
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.client.dsl.Http4sClientDsl
-
-import org.http4s.{ Uri, _ }
+import org.http4s.{Uri, _}
 import org.typelevel.jawn.RawFacade
 
 import scala.concurrent.ExecutionContext.Implicits.global

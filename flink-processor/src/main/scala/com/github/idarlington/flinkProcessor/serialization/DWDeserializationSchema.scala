@@ -7,7 +7,6 @@ import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.connectors.kafka.KafkaDeserializationSchema
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.serialization.Deserializer
-import com.github.idarlington.model.circe.AppDecoders._
 
 class DWDeserializationSchema(topic: String)
     extends KafkaDeserializationSchema[DisruptionWrapper]

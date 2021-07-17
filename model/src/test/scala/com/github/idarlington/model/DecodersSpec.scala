@@ -1,9 +1,9 @@
 package com.github.idarlington.model
 
+import com.github.idarlington.model.circe.DutchDecoders._
 import io.circe.Json
 import io.circe.parser.parse
-import org.scalatest.{ Matchers, WordSpec }
-import com.github.idarlington.model.circe.DutchDecoders._
+import org.scalatest.{Matchers, WordSpec}
 
 import scala.io.BufferedSource
 

@@ -1,23 +1,14 @@
 package com.github.idarlington.flinkProcessor.processors
 
-import java.util.Properties
-
-import cats.effect.IO
 import com.github.idarlington.flinkProcessor.config.{ DecoderConfig, ProcessorConfig }
 import com.github.idarlington.flinkProcessor.serialization.DWSerializationSchema
 import com.github.idarlington.model.DisruptionWrapper
-import io.circe.Decoder.Result
-import io.circe.Json
-import io.circe.parser
-import org.apache.flink.api.common.serialization.SimpleStringSchema
-import org.apache.flink.streaming.api.scala.{ StreamExecutionEnvironment, _ }
-import org.apache.flink.streaming.connectors.kafka.{
-  FlinkKafkaConsumer,
-  FlinkKafkaProducer,
-  KafkaSerializationSchema
-}
 import com.github.idarlington.model.circe.DutchDecoders._
+import io.circe.{Json, parser}
+import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.streaming.api.datastream.DataStreamSink
+import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
+import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer, FlinkKafkaProducer}
 
 import scala.collection.immutable
 

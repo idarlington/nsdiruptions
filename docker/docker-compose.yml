@@ -59,7 +59,7 @@ services:
   scraper:
     image: scraper:0.1.0-SNAPSHOT
     environment:
-      SCRAPER_AUTH_KEY: ""
+      SCRAPER_AUTH_KEY: "${SCRAPER_AUTH_KEY}"
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
       - kafka

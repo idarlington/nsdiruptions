@@ -1,18 +1,13 @@
 package com.github.idarlington.flinkProcessor.processors
 
-import java.util.Properties
-
-import com.github.idarlington.flinkProcessor.config.{ DBConfig, ProcessorConfig }
+import com.github.idarlington.flinkProcessor.config.{DBConfig, ProcessorConfig}
 import com.github.idarlington.flinkProcessor.customFunctions.DisruptionsJDBCSink
 import com.github.idarlington.flinkProcessor.serialization.DWDeserializationSchema
-import com.github.idarlington.model.{ DisruptionWrapper, StationDisruption }
+import com.github.idarlington.model.{DisruptionWrapper, StationDisruption}
 import org.apache.flink.streaming.api.datastream.DataStreamSink
-import org.apache.flink.streaming.api.scala.{ StreamExecutionEnvironment, _ }
+import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 import org.flywaydb.core.Flyway
-import org.flywaydb.core.api.configuration.FluentConfiguration
-
-import scala.util.{ Failure, Success, Try }
 
 object Remodeller extends Processor[StationDisruption] {
 
@@ -50,6 +45,18 @@ object Remodeller extends Processor[StationDisruption] {
       )
   }
 
+  def remodel(wrapper: DisruptionWrapper): List[StationDisruption] = {
+    wrapper.disruption.trajectories.flatMap { trajectory =>
+      trajectory.stations.map { station =>
+        StationDisruption(
+          stationCode = station,
+          startTime   = trajectory.beginTime,
+          endTime     = trajectory.endTime,
+        )
+      }
+    }
+  }
+
   override def main(args: Array[String]): Unit = {
     val dbConfig = processorConfig.db
 
@@ -61,17 +68,5 @@ object Remodeller extends Processor[StationDisruption] {
 
     flyway.migrate()
     super.main(args)
-  }
-
-  def remodel(wrapper: DisruptionWrapper): List[StationDisruption] = {
-    wrapper.disruption.trajectories.flatMap { trajectory =>
-      trajectory.stations.map { station =>
-        StationDisruption(
-          stationCode = station,
-          startTime   = trajectory.beginTime,
-          endTime     = trajectory.endTime,
-        )
-      }
-    }
   }
 }
