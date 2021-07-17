@@ -1,7 +1,6 @@
 package com.github.idarlington.scraper
 
 import cats.effect._
-import com.github.idarlington.scraper.ScraperApp.scraperConfig
 import fs2.Pipe
 import fs2.kafka.{ produce, ProducerRecord, ProducerRecords, ProducerResult, ProducerSettings }
 import io.circe._
