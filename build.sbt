@@ -1,9 +1,7 @@
 import Dependencies._
-import sbt.Keys.version
 
 name := "ns-disruptions"
 organization := "com.github.idarlington"
-version := "0.0.1"
 scalaVersion := Dependencies.version.scala
 
 ThisBuild / resolvers += "Artifactory Realm" at "https://kaluza.jfrog.io/artifactory/maven"
@@ -31,6 +29,7 @@ lazy val `flink-processor` = (project in file("flink-processor"))
 lazy val commonSettings = Seq(
   publishMavenStyle := true,
   scalacOptions ++= Seq("-Ypartial-unification", "-Xsource:3"),
+  dockerBaseImage := Dependencies.version.dockerBaseImage,
   Test / publishArtifact := false,
   scalaVersion := Dependencies.version.scala
 )

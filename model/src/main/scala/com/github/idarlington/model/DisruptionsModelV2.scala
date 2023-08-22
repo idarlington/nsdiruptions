@@ -100,7 +100,7 @@ case class Disruption(
   priority: Double
 )
 
-case class DisruptionWrapper(
+case class DisruptionWrapperV2(
   id: String,
   `type`: String,
   title: String,

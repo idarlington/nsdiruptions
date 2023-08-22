@@ -1,9 +1,17 @@
 package com.github.idarlington.model.circe
 
-import com.github.idarlington.model.DisruptionType
+import com.github.idarlington.model.{ Calamity, DisruptionBaseV3, DisruptionType, DisruptionV3 }
 import io.circe.Decoder
+import io.circe.generic._
+import io.circe.generic.auto._
+import cats.syntax.functor._
 
 object AppDecoders {
+
+  implicit val V3Decoder: Decoder[DisruptionBaseV3] =
+  semiauto.deriveDecoder[DisruptionV3].widen or semiauto
+    .deriveDecoder[Calamity]
+    .widen
 
   implicit val disruptionTypeDecoder: Decoder[DisruptionType] = Decoder.instance[DisruptionType] {
     _.as[String].map {

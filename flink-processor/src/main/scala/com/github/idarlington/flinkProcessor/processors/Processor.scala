@@ -10,8 +10,6 @@ trait Processor[T] {
   val env: StreamExecutionEnvironment  = StreamExecutionEnvironment.getExecutionEnvironment
   val processorConfig: ProcessorConfig = ProcessorConfig()
 
-  def properties: Properties = processorConfig.kafka.asProperties
-
   def process(
     env: StreamExecutionEnvironment,
     processorConfig: ProcessorConfig

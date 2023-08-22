@@ -2,11 +2,19 @@ package com.github.idarlington.scraper
 
 import com.github.idarlington.model.config.KafkaConfig
 import org.http4s.Uri
-import pureconfig._
-import pureconfig.error._
-import pureconfig.generic.auto._
+import pureconfig.*
+import pureconfig.error.*
+import pureconfig.generic.auto.*
 
-case class ScraperConfig(url: Uri, authKey: String, topic: String, kafka: KafkaConfig)
+import scala.concurrent.duration.FiniteDuration
+
+case class ScraperConfig(
+  url: Uri,
+  authKey: String,
+  topic: String,
+  scrapeDelay: FiniteDuration,
+  kafka: KafkaConfig
+)
 
 object ScraperConfig {
   implicit val uriReader: ConfigReader[Uri] = ConfigReader.fromString[Uri] { url: String =>

@@ -1,11 +1,11 @@
 package com.github.idarlington.flinkProcessor.customFunctions
 
-import com.github.idarlington.model.DisruptionWrapper
+import com.github.idarlington.model.{DisruptionBaseV3, DisruptionWrapperV2}
 import org.apache.flink.api.common.functions.RichFilterFunction
 import org.apache.flink.api.common.state.{MapState, MapStateDescriptor}
 import org.apache.flink.configuration.Configuration
 
-class DeDuplicatorFilter extends RichFilterFunction[DisruptionWrapper] {
+class DeDuplicatorFilter extends RichFilterFunction[DisruptionBaseV3] {
 
   @transient
   private var disruptionIds: MapState[String, Boolean] = _
@@ -16,7 +16,7 @@ class DeDuplicatorFilter extends RichFilterFunction[DisruptionWrapper] {
     )
   }
 
-  override def filter(wrapper: DisruptionWrapper): Boolean = {
+  override def filter(wrapper: DisruptionBaseV3): Boolean = {
     if (disruptionIds.contains(wrapper.id)) {
       false
     } else {

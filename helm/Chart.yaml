@@ -1,0 +1,30 @@
+apiVersion: v2
+name: ns-disruptions
+description: A Helm chart for Kubernetes
+version: 0.1.0
+appVersion: "0.0.1"
+
+dependencies:
+  - name: base-app
+    alias: scraper
+    version: 0.1.0
+    repository: file://charts/base-app
+
+  - name: kafka
+    repository: file://charts/kafka
+    version: 0.1.0
+
+  - name: base-app
+    alias: decoder
+    version: 0.1.0
+    repository: file://charts/base-app
+
+  - name: base-app
+    alias: de-duplicator
+    version: 0.1.0
+    repository: file://charts/base-app
+
+  - name: base-app
+    alias: database-sink
+    version: 0.1.0
+    repository: file://charts/base-app

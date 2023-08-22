@@ -102,4 +102,8 @@ project/plugins/project/
 *.class
 *.log
 
+### Helm ###
+# Chart dependencies
+**/charts/*.tgz
+
 # End of https://www.gitignore.io/api/sbt,scala,intellij+all

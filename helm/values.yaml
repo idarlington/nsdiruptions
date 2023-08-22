@@ -1,0 +1,54 @@
+scraper:
+  image:
+    repository: scraper
+    tag: 0.1.0-SNAPSHOT
+  envSecrets:
+    enabled: true
+    name: scraper-secret
+  env:
+    - key: KAFKA_BOOTSTRAP_SERVERS
+      value: kafka-service:9092
+
+decoder:
+  image:
+    repository: flink-processor
+    tag: 0.1.0-SNAPSHOT
+    command:
+      - "/opt/docker/bin/decoder"
+  env:
+    - key: KAFKA_BOOTSTRAP_SERVERS
+      value: kafka-service:9092
+
+de-duplicator:
+  image:
+    repository: flink-processor
+    tag: 0.1.0-SNAPSHOT
+    command:
+      - "/opt/docker/bin/de-duplicator"
+  env:
+    - key: KAFKA_BOOTSTRAP_SERVERS
+      value: kafka-service:9092
+
+database-sink:
+  image:
+    repository: flink-processor
+    tag: 0.1.0-SNAPSHOT
+    command:
+      - "/opt/docker/bin/database-sink"
+  envSecrets:
+    enabled: true
+    name: remodeller-secret
+  postgresql:
+    enabled: true
+    auth:
+      database: "ns-disruptions"
+      existingSecret: "remodeller-secret"
+  env:
+    - key: KAFKA_BOOTSTRAP_SERVERS
+      value: kafka-service:9092
+ 
+
+
+
+
+

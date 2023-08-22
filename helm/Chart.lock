@@ -1,0 +1,18 @@
+dependencies:
+- name: base-app
+  repository: file://charts/base-app
+  version: 0.1.0
+- name: kafka
+  repository: file://charts/kafka
+  version: 0.1.0
+- name: base-app
+  repository: file://charts/base-app
+  version: 0.1.0
+- name: base-app
+  repository: file://charts/base-app
+  version: 0.1.0
+- name: base-app
+  repository: file://charts/base-app
+  version: 0.1.0
+digest: sha256:26550af6d88108ebf475bc404e7577831b11a6706cc8d759c4986b96b1d02785
+generated: "2023-08-22T16:49:03.353891256+02:00"

@@ -2,19 +2,20 @@ import sbt._
 
 object Dependencies {
   lazy val version = new {
-    val embeddedKafka = "2.3.0"
-    val flyway        = "6.0.1"
-    val pureConfig    = "0.12.1"
-    val doobie        = "0.8.4"
-    val ovoKafkaCirce = "0.5.17"
-    val flink         = "1.9.0"
-    val scalaTest     = "3.0.0"
-    val scalaCheck    = "1.13.4"
-    val http4sVersion = "0.21.0-M5"
-    val circe         = "0.12.2"
-    val fs2Kafka      = "0.20.0"
-    val slf4jLog4j    = "1.7.30"
-    val scala         = "2.12.14"
+    val embeddedKafka   = "2.3.0"
+    val flyway          = "6.0.1"
+    val pureConfig      = "0.12.1"
+    val doobie          = "0.8.4"
+    val ovoKafkaCirce   = "0.5.17"
+    val flink           = "1.9.0"
+    val scalaTest       = "3.0.0"
+    val scalaCheck      = "1.13.4"
+    val http4sVersion   = "0.21.34"
+    val circe           = "0.12.2"
+    val fs2Kafka        = "0.20.0"
+    val slf4jLog4j      = "1.7.30"
+    val scala           = "2.12.14"
+    val dockerBaseImage = "eclipse-temurin:11.0.19_7-jre"
   }
 
   lazy val library = new {

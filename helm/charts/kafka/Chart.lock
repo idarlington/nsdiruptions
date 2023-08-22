@@ -1,0 +1,6 @@
+dependencies:
+- name: zookeeper
+  repository: file://charts/zookeeper
+  version: 0.1.0
+digest: sha256:64b08d21fdc1603b217e767213b1758bf41a8adc85a6930683d7995ea7f6dd58
+generated: "2023-08-21T18:19:17.82308289+02:00"

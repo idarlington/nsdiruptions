@@ -95,7 +95,7 @@ object DutchDecoders {
       serialNumber <- Decoder.instance(_.downField("volgnummer").as[Option[String]])
       priority <- Decoder.instance(_.downField("prioriteit").as[Double])
     } yield {
-      new Disruption(
+      Disruption(
         id,
         laneRestriction,
         reason,
@@ -124,11 +124,11 @@ object DutchDecoders {
       )
     }
 
-  implicit val disruptionWrapperDecoder: Decoder[DisruptionWrapper] = (
+  implicit val disruptionWrapperDecoder: Decoder[DisruptionWrapperV2] = (
     Decoder.instance(_.downField("id").as[String]),
     Decoder.instance(_.downField("type").as[String]),
     Decoder.instance(_.downField("titel").as[String]),
     Decoder.instance(_.downField("topic").as[Option[String]]),
     Decoder[Disruption].prepare(_.downField("verstoring"))
-  ).mapN(DisruptionWrapper)
+  ).mapN(DisruptionWrapperV2)
 }
