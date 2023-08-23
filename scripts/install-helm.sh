@@ -1,4 +1,4 @@
-helm dependency update helm/charts/kafka && \
-helm dependency update helm/charts/base-app && \
-helm dependency update helm/ && \
+#!/bin/bash
+
+sh ./scripts/update-helm-dep.sh
 helm install ns-disruptions ./helm --set scraper.apiKey="$SCRAPER_AUTH_KEY"

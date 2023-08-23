@@ -48,8 +48,8 @@ spec:
           {{- if or $.Values.env $.Values.postgresql.enabled }}
           env:
             {{- range $key, $val := .Values.env }}
-            - name: {{ $val.key }}
-              value: {{ $val.value | quote }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
             {{- end }}
             {{- if $.Values.postgresql.enabled }}
             - name: DB_URL

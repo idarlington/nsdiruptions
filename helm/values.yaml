@@ -6,8 +6,7 @@ scraper:
     enabled: true
     name: scraper-secret
   env:
-    - key: KAFKA_BOOTSTRAP_SERVERS
-      value: kafka-service:9092
+    KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
 
 decoder:
   image:
@@ -16,8 +15,7 @@ decoder:
     command:
       - "/opt/docker/bin/decoder"
   env:
-    - key: KAFKA_BOOTSTRAP_SERVERS
-      value: kafka-service:9092
+    KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
 
 de-duplicator:
   image:
@@ -26,8 +24,7 @@ de-duplicator:
     command:
       - "/opt/docker/bin/de-duplicator"
   env:
-    - key: KAFKA_BOOTSTRAP_SERVERS
-      value: kafka-service:9092
+    KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
 
 database-sink:
   image:
@@ -37,15 +34,14 @@ database-sink:
       - "/opt/docker/bin/database-sink"
   envSecrets:
     enabled: true
-    name: remodeller-secret
+    name: database-sink-secret
   postgresql:
     enabled: true
     auth:
       database: "ns-disruptions"
-      existingSecret: "remodeller-secret"
+      existingSecret: "database-sink-secret"
   env:
-    - key: KAFKA_BOOTSTRAP_SERVERS
-      value: kafka-service:9092
+    KAFKA_BOOTSTRAP_SERVERS: kafka-service:9092
  
 
 

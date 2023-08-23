@@ -1,0 +1,9 @@
+- [x] Clean up base app chart env values
+- [ ] Migrations
+    - [ ] Migrate to newer Kafka version
+    - [ ] Migrate to newer Scala version
+    - [ ] Migrate Http4s
+    - [ ] Migrate Flink streams
+    - [ ] Migrate Postgres
+- [ ] Liveness probe for services
+    - [ ] Check stream for liveness

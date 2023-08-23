@@ -14,5 +14,5 @@ dependencies:
 - name: base-app
   repository: file://charts/base-app
   version: 0.1.0
-digest: sha256:26550af6d88108ebf475bc404e7577831b11a6706cc8d759c4986b96b1d02785
-generated: "2023-08-22T16:49:03.353891256+02:00"
+digest: sha256:6778b6c0305be54b1170ea666aecb2d3a948db2f30be2f7275d855e2e86778fd
+generated: "2023-08-22T23:52:27.251223886+02:00"
